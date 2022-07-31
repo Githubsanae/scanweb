@@ -1,57 +1,94 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+  <div>
+    <v-chart class="chart" :option="option" />
+    <div></div>
   </div>
+  
 </template>
 
 <script>
+import { THEME_KEY } from "vue-echarts";
 export default {
-  name: 'HelloWorld',
+  name: "HelloWorld",
+  
+  provide: {
+    [THEME_KEY]: "dark",
+  },
   props: {
-    msg: String
-  }
+    msg: String,
+  },
+  computed: {
+    option(){
+      return{
+        tooltip: {
+        trigger: 'axis'
+        },
+        xAxis: {
+            type: 'category',
+            data: this.times,
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [
+            {
+            data:  this.value,
+            type: 'line',
+            smooth: true
+        }
+        ]
+      }
+    }
+  },
+  data() {
+    return {
+      items:'幸运勋章',
+      temp:[],
+      value:[],
+      times:[]
+    };
+  },
+  methods:{
+    randomData(){
+      return[
+        {时间:'2020-2-20 2:20:20',
+              value:Math.random()*100},
+              {时间:'2020-2-20 2:20:21',
+              value:Math.random()*100},
+              {时间:'2020-2-20 2:20:22',
+              value:Math.random()*100},
+              {时间:'2020-2-20 2:20:23',
+              value:Math.random()*100},
+              {时间:'2020-2-20 2:20:24',
+              value:Math.random()*100},
+              {时间:'2020-2-20 2:20:25',
+              value:Math.random()*100},
+              {时间:'2020-2-20 2:20:26',
+              value:Math.random()*100}
+      ]
+    },
+    
+    get_price(){
+      this.$http.get("http://192.168.2.173:8011/get_price",{params:{
+        items:this.items
+      }}).then((res)=>{
+        this.value = res.data.map(d=>d.幸运勋章)
+        this.times = res.data.map(d=>d.时间)
+
+      })
+    }
+  },
+  created() {
+    this.get_price()
+
+    
 }
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+.chart{
+  height:400px
 }
 </style>
