@@ -69,7 +69,7 @@ export default {
     },
     
     get_price(){
-      this.$http.get("http://192.168.2.173:8011/get_price",{params:{
+      this.$http.get("https://service-h3sdyd4e-1307716762.gz.apigw.tencentcs.com/release/get_price",{params:{
         items:this.items
       }}).then((res)=>{
         this.value = res.data.map(d=>d.幸运勋章)
