@@ -28,10 +28,13 @@ export default {
             data: this.times,
         },
         yAxis: {
-            type: 'value'
+            type: 'value',
+            min: 150,
+            max: 200,
         },
         series: [
             {
+            name:this.items,
             data:  this.value,
             type: 'line',
             smooth: true
