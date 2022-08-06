@@ -1,7 +1,17 @@
 <template>
   <div>
+    <h1>{{this.items}}/{{this.type}}</h1>
+    <b-button-group>
+      <b-button variant="success" @click="change_type_to_hours('hours')">hours</b-button>
+      <b-button variant="info" @click="change_type_to_hours('days')">days</b-button>
+      <b-button variant="warning" @click="change_type_to_hours('min')">minutes</b-button>
+    </b-button-group>
     <v-chart class="chart" :option="option" />
-    <div></div>
+    <b-button-group  v-for="item in columns" :key="item">
+      <b-button variant="success" @click="change_items(item)" >{{item}}</b-button>
+      <!-- <b-button variant="info" @click="change_items('幸运勋章')">幸运勋章</b-button>
+      <b-button variant="warning" @click="change_items('《小柯基》')">《小柯基》</b-button> -->
+    </b-button-group>
   </div>
   
 </template>
@@ -29,8 +39,6 @@ export default {
         },
         yAxis: {
             type: 'value',
-            min: 150,
-            max: 200,
         },
         series: [
             {
@@ -46,45 +54,42 @@ export default {
   data() {
     return {
       items:'幸运勋章',
+      type:`days`,
       temp:[],
       value:[],
-      times:[]
+      times:[],
+      columns:[]
     };
   },
   methods:{
-    randomData(){
-      return[
-        {时间:'2020-2-20 2:20:20',
-              value:Math.random()*100},
-              {时间:'2020-2-20 2:20:21',
-              value:Math.random()*100},
-              {时间:'2020-2-20 2:20:22',
-              value:Math.random()*100},
-              {时间:'2020-2-20 2:20:23',
-              value:Math.random()*100},
-              {时间:'2020-2-20 2:20:24',
-              value:Math.random()*100},
-              {时间:'2020-2-20 2:20:25',
-              value:Math.random()*100},
-              {时间:'2020-2-20 2:20:26',
-              value:Math.random()*100}
-      ]
-    },
-    
     get_price(){
       this.$http.get("https://service-h3sdyd4e-1307716762.gz.apigw.tencentcs.com/release/get_price",{params:{
-        items:this.items
+        items:this.items,
+        type:this.type
       }}).then((res)=>{
-        this.value = res.data.map(d=>d.幸运勋章)
-        this.times = res.data.map(d=>d.时间)
-
+        this.value = res.data.map(d=>d.pirces)
+        this.times = res.data.map(d=>d.times)
+      })
+    },
+    change_type_to_hours(change){
+      this.type=change;
+      this.get_price();
+    },
+    change_items(new_items){
+      this.items=new_items;
+      this.get_price();
+    },
+    get_columns(){
+      this.$http.get("https://service-h3sdyd4e-1307716762.gz.apigw.tencentcs.com/release/get_columns").then(res =>{
+      this.columns=res.data.map(d=>d.Field)
+      this.columns.splice(0,2)
       })
     }
+    
   },
   created() {
-    this.get_price()
-
-    
+    this.get_price(),
+    this.get_columns()
 }
 };
 </script>
@@ -92,6 +97,6 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
 .chart{
-  height:400px
+  height:600px
 }
 </style>
