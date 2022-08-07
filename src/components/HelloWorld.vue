@@ -45,27 +45,26 @@ export default {
       type: 'slider',
       show: true,
       xAxisIndex: [0],
-      start: 0,
+      start: 40,
       end: 100
     },
     {
       type: 'slider',
       show: true,
       yAxisIndex: [0],
-      left: '93%',
-      start: 0,
+      start: 50,
       end: 100
     },
               {
       type: 'inside',
       xAxisIndex: [0],
-      start: 0,
+      start: 40,
       end: 100
     },
     {
       type: 'inside',
       yAxisIndex: [0],
-      start: 1,
+      start: 50,
       end: 100
     }],
         series: [
