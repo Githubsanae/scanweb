@@ -1,17 +1,18 @@
 <template>
   <div>
     <h1>{{this.items}}/{{this.type}}</h1>
-    <b-button-group>
-      <b-button variant="success" @click="change_type_to_hours('hours')">hours</b-button>
-      <b-button variant="info" @click="change_type_to_hours('days')">days</b-button>
-      <b-button variant="warning" @click="change_type_to_hours('min')">minutes</b-button>
-    </b-button-group>
+    
+    <b-button size="sm" variant="outline-success" @click="change_type_to_hours('hours')">hours</b-button>
+    <b-button size="sm" variant="outline-info" @click="change_type_to_hours('days')">days</b-button>
+    <b-button size="sm" variant="outline-warning" @click="change_type_to_hours('min')">minutes</b-button>
+   
+    <div class="btn-groups" ref="wrapper">
+      <b-button-group size="sm">
+        <b-button variant="outline" class="btn-test" v-for="item in columns" :key="item" @click="change_items(item)" >{{item}}</b-button>
+      </b-button-group>
+    </div>
     <v-chart class="chart" :option="option" />
-    <b-button-group  v-for="item in columns" :key="item">
-      <b-button variant="success" @click="change_items(item)" >{{item}}</b-button>
-      <!-- <b-button variant="info" @click="change_items('幸运勋章')">幸运勋章</b-button>
-      <b-button variant="warning" @click="change_items('《小柯基》')">《小柯基》</b-button> -->
-    </b-button-group>
+
   </div>
   
 </template>
@@ -45,26 +46,26 @@ export default {
       type: 'slider',
       show: true,
       xAxisIndex: [0],
-      start: 40,
+      start: this.x_precent,
       end: 100
     },
     {
       type: 'slider',
       show: true,
       yAxisIndex: [0],
-      start: 50,
+      start: this.y_precent,
       end: 100
     },
               {
       type: 'inside',
       xAxisIndex: [0],
-      start: 40,
+      start: this.x_precent,
       end: 100
     },
     {
       type: 'inside',
       yAxisIndex: [0],
-      start: 50,
+      start: this.y_precent,
       end: 100
     }],
         series: [
@@ -82,6 +83,8 @@ export default {
     return {
       items:'幸运勋章',
       type:`days`,
+      x_precent:0,
+      y_precent:20,
       temp:[],
       value:[],
       times:[],
@@ -99,6 +102,16 @@ export default {
       })
     },
     change_type_to_hours(change){
+      if (change == "hours"){
+        this.x_precent = 80
+        this.y_precent = 60
+      }else if (change == "min"){
+        this.x_precent = 95
+        this.y_precent = 70
+      }else{
+        this.x_precent = 0
+        this.y_precent = 20
+      }
       this.type=change;
       this.get_price();
     },
@@ -112,6 +125,7 @@ export default {
       this.columns.splice(0,2)
       })
     }
+
     
   },
   created() {
@@ -125,5 +139,28 @@ export default {
 <style scoped lang="less">
 .chart{
   height:600px
+}
+.btn-groups{
+  width: 100%;
+  overflow-x:auto
+}
+.btn-test{
+  white-space: nowrap;
+}
+.btn-groups::-webkit-scrollbar{
+  height: 10px;
+  background-color: #ffffff;
+}
+.btn-groups::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px #cfcfd1;
+    -webkit-box-shadow: inset 0 0 6px #cfcfd1;
+    border-radius: 10px;
+    background-color:#f7f7f7;
+}
+.btn-groups::-webkit-scrollbar-thumb{
+    border-radius: 10px;
+    box-shadow: inset 0 0 6px #cfcfd1;
+    -webkit-box-shadow: inset 0 0 6px #cfcfd1;
+    background-color: #cfcfd1;
 }
 </style>
